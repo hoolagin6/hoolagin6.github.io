@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Texture Cube Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+        #leftPanel {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        #canvasContainer {
+            flex-grow: 1;
+            position: relative;
+        }
+        #canvas {
+            width: 100%;
+            height: 100%;
+        }
+        #tiltSlider {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 200px;
+        }
+        #textureControls {
+            height: 140px;
+            display: flex;
+            border-top: 1px solid #ccc;
+            padding: 10px;
+        }
+        .faceControl {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 5px;
+        }
+        .dropZone {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-size: cover;
+            position: relative;
+        }
+        .globalDropZone {
+            width: 60px;
+            height: 60px;
+        }
+        .dropZoneText {
+            pointer-events: none;
+        }
+        .rotationControl {
+            margin-top: 5px;
+            width: 100px;
+        }
+        #bottomControls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        #bottomControls button {
+            padding: 8px;
+        }
+        #colorPicker {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="leftPanel">
+            <div id="canvasContainer">
+                <div id="canvas"></div>
+                <input type="range" id="tiltSlider" min="-90" max="90" value="20" orient="vertical">
+            </div>
+            <div id="textureControls">
+                <div class="faceControl">
+                    <div class="dropZone" id="dropTop">
+                        <span class="dropZoneText">Top</span>
+                    </div>
+                    <select class="rotationControl" id="rotateTop">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                    </select>
+                </div>
+                <div class="faceControl">
+                    <div class="dropZone" id="dropFront">
+                        <span class="dropZoneText">Front</span>
+                    </div>
+                    <select class="rotationControl" id="rotateFront">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                    </select>
+                </div>
+                <div class="faceControl">
+                    <div class="dropZone" id="dropSide">
+                        <span class="dropZoneText">Side</span>
+                    </div>
+                    <select class="rotationControl" id="rotateSide">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                    </select>
+                </div>
+                <div class="faceControl">
+                    <div class="dropZone" id="dropBack">
+                        <span class="dropZoneText">Back</span>
+                    </div>
+                    <select class="rotationControl" id="rotateBack">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                    </select>
+                </div>
+                <div class="faceControl">
+                    <div class="dropZone" id="dropBottom">
+                        <span class="dropZoneText">Bottom</span>
+                    </div>
+                    <select class="rotationControl" id="rotateBottom">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                    </select>
+                </div>
+                <div class="faceControl">
+                    <div class="dropZone globalDropZone" id="dropGlobal">
+                        <span class="dropZoneText">All</span>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+            </   </div>
+            <div id="bottomControls">
+                <button id="bgColorButton">Background Color</button>
+                <input type="color" id="colorPicker" value="#00ff00">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, cube;
+        let textures = {};
+        let originalImages = {
+            top: null,
+            bottom: null,
+            front: null,
+            back: null,
+            side: null
+        };
+        let bgColor = 0x00ff00;
+        let angle = 0;
+        let spinSpeed = 0.01;
+        let animationId;
+        let isSpinning = true;
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(bgColor);
+
+            camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+            camera.position.z = 6;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(1, 1);
+            document.getElementById('canvas').appendChild(renderer.domElement);
+
+            const defaultTexture = createDefaultTexture();
+
+            const materials = [
+                new THREE.MeshBasicMaterial({ map: defaultTexture }),
+                new THREE.MeshBasicMaterial({ map: defaultTexture }),
+                new THREE.MeshBasicMaterial({ map: defaultTexture }),
+                new THREE.MeshBasicMaterial({ map: defaultTexture }),
+                new THREE.MeshBasicMaterial({ map: defaultTexture }),
+                new THREE.MeshBasicMaterial({ map: defaultTexture })
+            ];
+
+            textures = {
+                right: { texture: defaultTexture, material: materials[0] },
+                left: { texture: defaultTexture, material: materials[1] },
+                top: { texture: defaultTexture, material: materials[2] },
+                bottom: { texture: defaultTexture, material: materials[3] },
+                front: { texture: defaultTexture, material: materials[4] },
+                back: { texture: defaultTexture, material: materials[5] }
+            };
+
+            const geometry = new THREE.BoxGeometry(2, 2, 2);
+            cube = new THREE.Mesh(geometry, materials);
+            scene.add(cube);
+
+            cube.rotation.x = THREE.Math.degToRad(20);
+
+            window.addEventListener('resize', onWindowResize);
+            onWindowResize();
+
+            animate();
+
+            initEventListeners();
+        }
+
+        function createDefaultTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const context = canvas.getContext('2d');
+
+            const squareSize = 32;
+            for (let x = 0; x < canvas.width; x += squareSize) {
+                for (let y = 0; y < canvas.height; y += squareSize) {
+                    const color = ((x / squareSize) % 2 === (y / squareSize) % 2) ? '#ffffff' : '#cccccc';
+                    context.fillStyle = color;
+                    context.fillRect(x, y, squareSize, squareSize);
+                }
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.magFilter = THREE.NearestFilter;
+            texture.minFilter = THREE.NearestFilter;
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvasContainer');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const size = Math.min(width, height);
+
+            renderer.setSize(size, size);
+            camera.aspect = 1;
+            camera.updateProjectionMatrix();
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+
+            if (isSpinning) {
+                angle += spinSpeed;
+                cube.rotation.y = angle;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function initEventListeners() {
+            const tiltSlider = document.getElementById('tiltSlider');
+            tiltSlider.addEventListener('input', function() {
+                cube.rotation.x = THREE.Math.degToRad(this.value);
+            });
+
+            setupDropZone('top');
+            setupDropZone('front');
+            setupDropZone('side');
+            setupDropZone('back');
+            setupDropZone('bottom');
+            setupDropZone('global');
+
+            document.getElementById('rotateTop').addEventListener('change', function() {
+                updateFaceTexture('top', this.value);
+            });
+            document.getElementById('rotateFront').addEventListener('change', function() {
+                updateFaceTexture('front', this.value);
+            });
+            document.getElementById('rotateSide').addEventListener('change', function() {
+                updateFaceTexture('side', this.value);
+            });
+            document.getElementById('rotateBack').addEventListener('change', function() {
+                updateFaceTexture('back', this.value);
+            });
+            document.getElementById('rotateBottom').addEventListener('change', function() {
+                updateFaceTexture('bottom', this.value);
+            });
+
+            document.getElementById('bgColorButton').addEventListener('click', function() {
+                document.getElementById('colorPicker').click();
+            });
+
+            document.getElementById('colorPicker').addEventListener('input', function() {
+                bgColor = parseInt(this.value.substring(1), 16);
+                scene.background = new THREE.Color(bgColor);
+            });
+
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const target = document.getElementById('fileInput').dataset.target;
+                        handleImageLoad(target, event.target.result);
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+
+            document.querySelector('#canvas').addEventListener('click', function() {
+                isSpinning = !isSpinning;
+            });
+        }
+
+        function setupDropZone(face) {
+            const dropZone = document.getElementById(`drop${face.charAt(0).toUpperCase() + face.slice(1)}`);
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#3388ff';
+            });
+
+            dropZone.addEventListener('dragleave', function() {
+                this.style.borderColor = '#aaa';
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#aaa';
+
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        handleImageLoad(face, event.target.result);
+                    };
+                    reader.readAsDataURL(e.dataTransfer.files[0]);
+                }
+            });
+
+            dropZone.addEventListener('click', function() {
+                const fileInput = document.getElementById('fileInput');
+                fileInput.dataset.target = face;
+                fileInput.click();
+            });
+        }
+
+        function handleImageLoad(face, src) {
+            const img = new Image();
+            img.onload = function() {
+                if (face === 'global') {
+                    for (const f of ['top', 'bottom', 'front', 'back', 'side']) {
+                        originalImages[f] = src;
+                        const angle = document.getElementById(`rotate${f.charAt(0).toUpperCase() + f.slice(1)}`).value;
+                        updateFaceTexture(f, angle);
+                    }
+                } else {
+                    originalImages[face] = src;
+                    const angle = document.getElementById(`rotate${face.charAt(0).toUpperCase() + face.slice(1)}`).value;
+                    updateFaceTexture(face, angle);
+                }
+            };
+            img.src = src;
+
+            const dropZone = document.getElementById(`drop${face.charAt(0).toUpperCase() + face.slice(1)}`);
+            dropZone.style.backgroundImage = `url(${src})`;
+            dropZone.style.backgroundSize = 'cover';
+            dropZone.querySelector('.dropZoneText').style.display = 'none';
+        }
+
+        function updateFaceTexture(face, angle) {
+            if (!originalImages[face]) return;
+
+            const src = originalImages[face];
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(parseInt(angle) * Math.PI / 180);
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                ctx.restore();
+
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.magFilter = THREE.NearestFilter;
+                texture.minFilter = THREE.NearestFilter;
+                texture.needsUpdate = true;
+
+                if (face === 'top') {
+                    textures.top.texture = texture;
+                    textures.top.material.map = texture;
+                } else if (face === 'bottom') {
+                    textures.bottom.texture = texture;
+                    textures.bottom.material.map = texture;
+                } else if (face === 'front') {
+                    textures.front.texture = texture;
+                    textures.front.material.map = texture;
+                } else if (face === 'back') {
+                    textures.back.texture = texture;
+                    textures.back.material.map = texture;
+                } else if (face === 'side') {
+                    textures.left.texture = texture;
+                    textures.left.material.map = texture;
+                    textures.right.texture = texture;
+                    textures.right.material.map = texture;
+                }
+
+                const dropZone = document.getElementById(`drop${face.charAt(0).toUpperCase() + face.slice(1)}`);
+                dropZone.style.backgroundImage = `url(${canvas.toDataURL()})`;
+            };
+            img.src = src;
+        }
+
+        init();
+    </script>
+</body>
+</html>
