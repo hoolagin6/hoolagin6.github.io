@@ -20,33 +20,35 @@
             width: 100%;
             display: flex;
             flex-direction: column;
+            height: 100vh;
         }
         #canvasContainer {
             flex-grow: 1;
+            min-height: 200px;
             position: relative;
         }
         #canvas {
             width: 100%;
             height: 100%;
         }
-        #tiltSlider {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 200px;
-        }
         #textureControls {
-            height: 140px;
             display: flex;
-            border-top: 1px solid #ccc;
+            justify-content: space-between;
+            align-items: center;
             padding: 10px;
+            border-top: 1px solid #ccc;
+            height: auto;
+        }
+        .faceControls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .faceControl {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0 5px;
+            min-width: 100px;
         }
         .dropZone {
             width: 100px;
@@ -65,17 +67,24 @@
         }
         .dropZoneText {
             pointer-events: none;
+            font-size: 14px;
         }
         .rotationControl {
             margin-top: 5px;
             width: 100px;
         }
+        .tiltDial {
+            margin-top: 5px;
+        }
+        #tiltSVG {
+            cursor: pointer;
+        }
         #bottomControls {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 10px;
             padding: 10px;
+            border-top: 1px solid #ccc;
         }
         #bottomControls button {
             padding: 8px;
@@ -86,6 +95,60 @@
         .hidden {
             display: none;
         }
+        @media (max-width: 800px) {
+            .dropZone {
+                width: 80px;
+                height: 80px;
+            }
+            .globalDropZone {
+                width: 50px;
+                height: 50px;
+            }
+            .rotationControl {
+                width: 80px;
+            }
+            .tiltDial svg {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        @media (max-height: 600px) {
+            .dropZone {
+                width: 70px;
+                height: 70px;
+            }
+            .globalDropZone {
+                width: 40px;
+                height: 40px;
+            }
+            .tiltDial svg {
+                width: 40px;
+                height: 40px;
+            }
+            .rotationControl {
+                width: 70px;
+            }
+            #bottomControls {
+                padding: 5px;
+            }
+        }
+        @media (max-height: 400px) {
+            .dropZone {
+                width: 50px;
+                height: 50px;
+            }
+            .globalDropZone {
+                width: 30px;
+                height: 30px;
+            }
+            .tiltDial svg {
+                width: 30px;
+                height: 30px;
+            }
+            .rotationControl {
+                width: 50px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -93,71 +156,84 @@
         <div id="leftPanel">
             <div id="canvasContainer">
                 <div id="canvas"></div>
-                <input type="range" id="tiltSlider" min="-90" max="90" value="20" orient="vertical">
             </div>
             <div id="textureControls">
-                <div class="faceControl">
-                    <div class="dropZone" id="dropTop">
-                        <span class="dropZoneText">Top</span>
+                <div class="faceControls">
+                    <div class="faceControl">
+                        <div class="dropZone" id="dropTop">
+                            <span class="dropZoneText">Top</span>
+                        </div>
+                        <select class="rotationControl" id="rotateTop">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
                     </div>
-                    <select class="rotationControl" id="rotateTop">
-                        <option value="0">0°</option>
-                        <option value="90">90°</option>
-                        <option value="180">180°</option>
-                        <option value="270">270°</option>
-                    </select>
-                </div>
-                <div class="faceControl">
-                    <div class="dropZone" id="dropFront">
-                        <span class="dropZoneText">Front</span>
+                    <div class="faceControl">
+                        <div class="dropZone" id="dropFront">
+                            <span class="dropZoneText">Front</span>
+                        </div>
+                        <select class="rotationControl" id="rotateFront">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
                     </div>
-                    <select class="rotationControl" id="rotateFront">
-                        <option value="0">0°</option>
-                        <option value="90">90°</option>
-                        <option value="180">180°</option>
-                        <option value="270">270°</option>
-                    </select>
-                </div>
-                <div class="faceControl">
-                    <div class="dropZone" id="dropSide">
-                        <span class="dropZoneText">Side</span>
+                    <div class="faceControl">
+                        <div class="dropZone" id="dropSide">
+                            <span class="dropZoneText">Side</span>
+                        </div>
+                        <select class="rotationControl" id="rotateSide">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
                     </div>
-                    <select class="rotationControl" id="rotateSide">
-                        <option value="0">0°</option>
-                        <option value="90">90°</option>
-                        <option value="180">180°</option>
-                        <option value="270">270°</option>
-                    </select>
-                </div>
-                <div class="faceControl">
-                    <div class="dropZone" id="dropBack">
-                        <span class="dropZoneText">Back</span>
+                    <div class="faceControl">
+                        <div class="dropZone" id="dropBack">
+                            <span class="dropZoneText">Back</span>
+                        </div>
+                        <select class="rotationControl" id="rotateBack">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
                     </div>
-                    <select class="rotationControl" id="rotateBack">
-                        <option value="0">0°</option>
-                        <option value="90">90°</option>
-                        <option value="180">180°</option>
-                        <option value="270">270°</option>
-                    </select>
-                </div>
-                <div class="faceControl">
-                    <div class="dropZone" id="dropBottom">
-                        <span class="dropZoneText">Bottom</span>
+                    <div class="faceControl">
+                        <div class="dropZone" id="dropBottom">
+                            <span class="dropZoneText">Bottom</span>
+                        </div>
+                        <select class="rotationControl" id="rotateBottom">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
                     </div>
-                    <select class="rotationControl" id="rotateBottom">
-                        <option value="0">0°</option>
-                        <option value="90">90°</option>
-                        <option value="180">180°</option>
-                        <option value="270">270°</option>
-                    </select>
-                </div>
-                <div class="faceControl">
-                    <div class="dropZone globalDropZone" id="dropGlobal">
-                        <span class="dropZoneText">All</span>
+                    <div class="faceControl">
+                        <div class="dropZone globalDropZone" id="dropGlobal">
+                            <span class="dropZoneText">All</span>
+                        </div>
+                        <div class="tiltDial">
+                            <svg id="tiltSVG" width="60" height="60" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#aaa" stroke-width="2"/>
+                                <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2" transform="rotate(270 50 50)"/>
+                                <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2"/>
+                                <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2" transform="rotate(90 50 50)"/>
+                                <g id="tiltHandle">
+                                    <line x1="50" y1="50" x2="50" y2="10" stroke="#3388ff" stroke-width="4"/>
+                                    <circle cx="50" cy="10" r="5" fill="#3388ff"/>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <input type="file" id="fileInput" class="hidden" accept="image/*">
-            </   </div>
+            </div>
             <div id="bottomControls">
                 <button id="bgColorButton">Background Color</button>
                 <input type="color" id="colorPicker" value="#00ff00">
@@ -195,12 +271,12 @@
             const defaultTexture = createDefaultTexture();
 
             const materials = [
-                new THREE.MeshBasicMaterial({ map: defaultTexture }),
-                new THREE.MeshBasicMaterial({ map: defaultTexture }),
-                new THREE.MeshBasicMaterial({ map: defaultTexture }),
-                new THREE.MeshBasicMaterial({ map: defaultTexture }),
-                new THREE.MeshBasicMaterial({ map: defaultTexture }),
-                new THREE.MeshBasicMaterial({ map: defaultTexture })
+                new THREE.MeshBasicMaterial({ map: defaultTexture }), // right
+                new THREE.MeshBasicMaterial({ map: defaultTexture }), // left
+                new THREE.MeshBasicMaterial({ map: defaultTexture }), // top
+                new THREE.MeshBasicMaterial({ map: defaultTexture }), // bottom
+                new THREE.MeshBasicMaterial({ map: defaultTexture }), // front
+                new THREE.MeshBasicMaterial({ map: defaultTexture })  // back
             ];
 
             textures = {
@@ -215,8 +291,6 @@
             const geometry = new THREE.BoxGeometry(2, 2, 2);
             cube = new THREE.Mesh(geometry, materials);
             scene.add(cube);
-
-            cube.rotation.x = THREE.Math.degToRad(20);
 
             window.addEventListener('resize', onWindowResize);
             onWindowResize();
@@ -271,11 +345,6 @@
         }
 
         function initEventListeners() {
-            const tiltSlider = document.getElementById('tiltSlider');
-            tiltSlider.addEventListener('input', function() {
-                cube.rotation.x = THREE.Math.degToRad(this.value);
-            });
-
             setupDropZone('top');
             setupDropZone('front');
             setupDropZone('side');
@@ -322,6 +391,43 @@
             document.querySelector('#canvas').addEventListener('click', function() {
                 isSpinning = !isSpinning;
             });
+
+            // Tilt Dial Event Listeners
+            const tiltSVG = document.getElementById('tiltSVG');
+            let isDragging = false;
+
+            tiltSVG.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+
+            function startDrag(e) {
+                isDragging = true;
+                drag(e);
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                const rect = tiltSVG.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const dx = e.clientX - centerX;
+                const dy = e.clientY - centerY;
+                let theta = (Math.atan2(dy, dx) * 180 / Math.PI + 90 + 360) % 360;
+                let angle = theta <= 90 ? theta : theta - 360;
+                let clampedAngle = Math.max(-90, Math.min(90, angle));
+                const handle = document.getElementById('tiltHandle');
+                handle.setAttribute('transform', `rotate(${clampedAngle} 50 50)`);
+                cube.rotation.x = THREE.Math.degToRad(clampedAngle);
+            }
+
+            function endDrag() {
+                isDragging = false;
+            }
+
+            // Set initial tilt position
+            const initialTilt = 20;
+            document.getElementById('tiltHandle').setAttribute('transform', `rotate(${initialTilt} 50 50)`);
+            cube.rotation.x = THREE.Math.degToRad(initialTilt);
         }
 
         function setupDropZone(face) {
