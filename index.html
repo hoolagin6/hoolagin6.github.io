@@ -73,24 +73,41 @@
             margin-top: 5px;
             width: 100px;
         }
-        .tiltDial {
+        .dials {
+            display: flex;
+            gap: 10px;
             margin-top: 5px;
         }
-        #tiltSVG {
+        .dial {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .dial svg {
             cursor: pointer;
         }
         #bottomControls {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             gap: 10px;
             padding: 10px;
             border-top: 1px solid #ccc;
         }
-        #bottomControls button {
+        #bottomControls > * {
+            flex: 1 1 auto;
+            min-width: 100px;
             padding: 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            text-align: center;
+            cursor: pointer;
         }
-        #colorPicker {
-            display: none;
+        #bottomControls a {
+            text-decoration: none;
+            color: #000;
+        }
+        #bottomControls > *:hover {
+            background-color: #e0e0e0;
         }
         .hidden {
             display: none;
@@ -107,7 +124,7 @@
             .rotationControl {
                 width: 80px;
             }
-            .tiltDial svg {
+            .dial svg {
                 width: 50px;
                 height: 50px;
             }
@@ -121,7 +138,7 @@
                 width: 40px;
                 height: 40px;
             }
-            .tiltDial svg {
+            .dial svg {
                 width: 40px;
                 height: 40px;
             }
@@ -141,7 +158,7 @@
                 width: 30px;
                 height: 30px;
             }
-            .tiltDial svg {
+            .dial svg {
                 width: 30px;
                 height: 30px;
             }
@@ -218,17 +235,33 @@
                         <div class="dropZone globalDropZone" id="dropGlobal">
                             <span class="dropZoneText">All</span>
                         </div>
-                        <div class="tiltDial">
-                            <svg id="tiltSVG" width="60" height="60" viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="#aaa" stroke-width="2"/>
-                                <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2" transform="rotate(270 50 50)"/>
-                                <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2"/>
-                                <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2" transform="rotate(90 50 50)"/>
-                                <g id="tiltHandle">
-                                    <line x1="50" y1="50" x2="50" y2="10" stroke="#3388ff" stroke-width="4"/>
-                                    <circle cx="50" cy="10" r="5" fill="#3388ff"/>
-                                </g>
-                            </svg>
+                        <div class="dials">
+                            <div class="dial tiltDial">
+                                <svg id="tiltSVG" width="60" height="60" viewBox="0 0 100 100">
+                                    <path d="M10 50 A40 40 0 0 1 90 50" stroke="#aaa" stroke-width="2" fill="none"/>
+                                    <line class="tick" x1="10" y1="50" x2="20" y2="50" stroke="#aaa" stroke-width="2"/>
+                                    <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2"/>
+                                    <line class="tick" x1="90" y1="50" x2="80" y2="50" stroke="#aaa" stroke-width="2"/>
+                                    <g id="tiltHandle">
+                                        <line id="tiltLine" x1="50" y1="50" x2="50" y2="10" stroke="#3388ff" stroke-width="4"/>
+                                        <circle id="tiltCircle" cx="50" cy="10" r="5" fill="#3388ff"/>
+                                    </g>
+                                </svg>
+                                <span>Tilt</span>
+                            </div>
+                            <div class="dial rpmDial">
+                                <svg id="rpmSVG" width="60" height="60" viewBox="0 0 100 100">
+                                    <path d="M10 50 A40 40 0 0 1 90 50" stroke="#aaa" stroke-width="2" fill="none"/>
+                                    <line class="tick" x1="10" y1="50" x2="20" y2="50" stroke="#aaa" stroke-width="2"/>
+                                    <line class="tick" x1="50" y1="10" x2="50" y2="20" stroke="#aaa" stroke-width="2"/>
+                                    <line class="tick" x1="90" y1="50" x2="80" y2="50" stroke="#aaa" stroke-width="2"/>
+                                    <g id="rpmHandle">
+                                        <line id="rpmLine" x1="50" y1="50" x2="50" y2="10" stroke="#3388ff" stroke-width="4"/>
+                                        <circle id="rpmCircle" cx="50" cy="10" r="5" fill="#3388ff"/>
+                                    </g>
+                                </svg>
+                                <span>RPM</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -236,7 +269,10 @@
             </div>
             <div id="bottomControls">
                 <button id="bgColorButton">Background Color</button>
-                <input type="color" id="colorPicker" value="#00ff00">
+                <input type="color" id="colorPicker" value="#00ff00" class="hidden">
+                <a href="https://github.com/Mojang/bedrock-samples/tree/main/resource_pack/textures/blocks" target="_blank" class="controlButton">Textures</a>
+                <a href="https://mcasset.cloud/1.21.4/assets/minecraft/textures/block" target="_blank" class="controlButton">Textures (mirror)</a>
+                <a href="https://youtube.com/@hoolagin6" target="_blank" class="controlButton">hoolagin6 on Youtube</a>
             </div>
         </div>
     </div>
@@ -253,9 +289,11 @@
         };
         let bgColor = 0x00ff00;
         let angle = 0;
-        let spinSpeed = 0.01;
+        let spinSpeed = 0.01; // initial spin speed
         let animationId;
         let isSpinning = true;
+
+        const maxRPM = 60; // maximum RPM
 
         function init() {
             scene = new THREE.Scene();
@@ -392,11 +430,45 @@
                 isSpinning = !isSpinning;
             });
 
-            // Tilt Dial Event Listeners
-            const tiltSVG = document.getElementById('tiltSVG');
+            // Setup dials
+            const initialTilt = 20;
+            const initialDialThetaTilt = initialTilt + 90;
+
+            const initialSpinSpeed = 0.01;
+            const initialRPM = (initialSpinSpeed * 1800) / Math.PI;
+            const initialDialThetaRPM = (initialRPM / maxRPM) * 180;
+
+            setupDial('tiltSVG', 'tiltHandle', 'tiltLine', 'tiltCircle', function(dial_theta) {
+                const tilt = dial_theta - 90;
+                cube.rotation.x = THREE.Math.degToRad(tilt);
+            }, initialDialThetaTilt);
+
+            setupDial('rpmSVG', 'rpmHandle', 'rpmLine', 'rpmCircle', function(dial_theta) {
+                const RPM = (dial_theta / 180) * maxRPM;
+                spinSpeed = (RPM * Math.PI) / 1800;
+            }, initialDialThetaRPM);
+
+            // Paste event listener
+            document.addEventListener('paste', function(event) {
+                const items = event.clipboardData.items;
+                for (let item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        const blob = item.getAsFile();
+                        const url = URL.createObjectURL(blob);
+                        handleImageLoad('global', url);
+                        break;
+                    }
+                }
+            });
+        }
+
+        function setupDial(svgId, handleId, lineId, circleId, updateFunction, initialDialTheta) {
+            const svg = document.getElementById(svgId);
+            const line = document.getElementById(lineId);
+            const circle = document.getElementById(circleId);
             let isDragging = false;
 
-            tiltSVG.addEventListener('mousedown', startDrag);
+            svg.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', endDrag);
 
@@ -407,27 +479,34 @@
 
             function drag(e) {
                 if (!isDragging) return;
-                const rect = tiltSVG.getBoundingClientRect();
+                const rect = svg.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
                 const dx = e.clientX - centerX;
                 const dy = e.clientY - centerY;
-                let theta = (Math.atan2(dy, dx) * 180 / Math.PI + 90 + 360) % 360;
-                let angle = theta <= 90 ? theta : theta - 360;
-                let clampedAngle = Math.max(-90, Math.min(90, angle));
-                const handle = document.getElementById('tiltHandle');
-                handle.setAttribute('transform', `rotate(${clampedAngle} 50 50)`);
-                cube.rotation.x = THREE.Math.degToRad(clampedAngle);
+                let raw_theta = Math.atan2(dy, -dx) * 180 / Math.PI;
+                let dial_theta = 90 - raw_theta;
+                dial_theta = Math.max(0, Math.min(180, dial_theta));
+                updateFunction(dial_theta);
+                setDialPosition(dial_theta);
             }
 
             function endDrag() {
                 isDragging = false;
             }
 
-            // Set initial tilt position
-            const initialTilt = 20;
-            document.getElementById('tiltHandle').setAttribute('transform', `rotate(${initialTilt} 50 50)`);
-            cube.rotation.x = THREE.Math.degToRad(initialTilt);
+            function setDialPosition(dial_theta) {
+                const rad = dial_theta * Math.PI / 180;
+                const x = 50 + 40 * Math.sin(rad - Math.PI / 2);
+                const y = 50 - 40 * Math.cos(rad - Math.PI / 2);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+            }
+
+            updateFunction(initialDialTheta);
+            setDialPosition(initialDialTheta);
         }
 
         function setupDropZone(face) {
