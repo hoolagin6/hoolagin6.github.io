@@ -311,18 +311,33 @@ function processSkin() {
             bodyParts.forEach(part => {
                 const { minX, maxX, minY, maxY, minZ, maxZ, faces, accessory } = part;
                 
-                // Process base skin layer
-                faces.forEach(face => {
+                // Process non-front base faces first
+                faces.filter(face => face.type !== 'front').forEach(face => {
                     const faceCommands = generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageData, false);
                     commands.push(...faceCommands);
                 });
                 
-                // Process accessory layer if available
+                // Then process the front base face
+                const frontFace = faces.find(face => face.type === 'front');
+                if (frontFace) {
+                    const frontCommands = generateFaceCommands(frontFace, minX, maxX, minY, maxY, minZ, maxZ, imageData, false);
+                    commands.push(...frontCommands);
+                }
+                
+                // Process accessory layers if available
                 if (accessory) {
-                    accessory.forEach(face => {
+                    // Process non-front accessory faces first
+                    accessory.filter(face => face.type !== 'front').forEach(face => {
                         const accessoryCommands = generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageData, true);
                         commands.push(...accessoryCommands);
                     });
+                    
+                    // Then process the front accessory face
+                    const frontAccessory = accessory.find(face => face.type === 'front');
+                    if (frontAccessory) {
+                        const frontAccessoryCommands = generateFaceCommands(frontAccessory, minX, maxX, minY, maxY, minZ, maxZ, imageData, true);
+                        commands.push(...frontAccessoryCommands);
+                    }
                 }
             });
 
@@ -346,7 +361,6 @@ function processSkin() {
             for (let i = 0; i < commands.length; i++) {
                 const commandStr = `{id:"minecraft:command_block_minecart",Command:"${commands[i]}"},`;
                 
-                // Check if adding this command would exceed the limit
                 if ((currentChunk.length + commandStr.length) > MAX_CONTENT_LENGTH && currentChunk.length > 0) {
                     commandChunks.push(currentChunk);
                     currentChunk = commandStr;
@@ -355,7 +369,6 @@ function processSkin() {
                 }
             }
             
-            // Add the last chunk if it has content
             if (currentChunk.length > 0) {
                 commandChunks.push(currentChunk);
             }
@@ -373,11 +386,9 @@ function processSkin() {
             const commandOutput = document.getElementById('commandOutput');
             const outputContainer = document.getElementById('output-container');
             
-            // Remove any existing split-info divs
             const existingInfo = document.querySelector('.split-info');
             if (existingInfo) existingInfo.remove();
             
-            // Display commands
             if (finalCommands.length > 1) {
                 const splitInfo = document.createElement('div');
                 splitInfo.className = 'split-info';
