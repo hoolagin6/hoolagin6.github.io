@@ -1,57 +1,164 @@
-// Block colors with RGB values
-const blockColors = [
-    // Wool colors
-    { type: 'wool', color: 'black', rgb: [21, 21, 26] },
-    { type: 'wool', color: 'blue', rgb: [53, 57, 157] },
-    { type: 'wool', color: 'brown', rgb: [114, 72, 41] },
-    { type: 'wool', color: 'cyan', rgb: [21, 138, 145] },
-    { type: 'wool', color: 'gray', rgb: [63, 68, 72] },
-    { type: 'wool', color: 'green', rgb: [85, 110, 28] },
-    { type: 'wool', color: 'light_blue', rgb: [58, 175, 217] },
-    { type: 'wool', color: 'light_gray', rgb: [142, 142, 135] },
-    { type: 'wool', color: 'lime', rgb: [112, 185, 26] },
-    { type: 'wool', color: 'magenta', rgb: [190, 69, 180] },
-    { type: 'wool', color: 'orange', rgb: [241, 118, 20] },
-    { type: 'wool', color: 'pink', rgb: [238, 141, 172] },
-    { type: 'wool', color: 'purple', rgb: [122, 42, 173] },
-    { type: 'wool', color: 'red', rgb: [161, 39, 35] },
-    { type: 'wool', color: 'white', rgb: [234, 236, 237] },
-    { type: 'wool', color: 'yellow', rgb: [249, 198, 40] },
-    // Concrete colors
-    { type: 'concrete', color: 'black', rgb: [8, 10, 15] },
-    { type: 'concrete', color: 'blue', rgb: [45, 47, 143] },
-    { type: 'concrete', color: 'brown', rgb: [96, 60, 32] },
-    { type: 'concrete', color: 'cyan', rgb: [21, 119, 136] },
-    { type: 'concrete', color: 'gray', rgb: [55, 58, 62] },
-    { type: 'concrete', color: 'green', rgb: [73, 91, 36] },
-    { type: 'concrete', color: 'light_blue', rgb: [36, 137, 199] },
-    { type: 'concrete', color: 'light_gray', rgb: [125, 125, 115] },
-    { type: 'concrete', color: 'lime', rgb: [94, 169, 25] },
-    { type: 'concrete', color: 'magenta', rgb: [169, 48, 159] },
-    { type: 'concrete', color: 'orange', rgb: [224, 97, 1] },
-    { type: 'concrete', color: 'pink', rgb: [214, 101, 143] },
-    { type: 'concrete', color: 'purple', rgb: [100, 32, 156] },
-    { type: 'concrete', color: 'red', rgb: [142, 33, 33] },
-    { type: 'concrete', color: 'white', rgb: [207, 213, 214] },
-    { type: 'concrete', color: 'yellow', rgb: [241, 175, 21] },
-    // Terracotta colors
-    { type: 'terracotta', color: 'black', rgb: [37, 23, 16] },
-    { type: 'terracotta', color: 'blue', rgb: [74, 60, 91] },
-    { type: 'terracotta', color: 'brown', rgb: [77, 51, 36] },
-    { type: 'terracotta', color: 'cyan', rgb: [87, 91, 91] },
-    { type: 'terracotta', color: 'gray', rgb: [58, 42, 36] },
-    { type: 'terracotta', color: 'green', rgb: [76, 83, 42] },
-    { type: 'terracotta', color: 'light_blue', rgb: [113, 109, 138] },
-    { type: 'terracotta', color: 'light_gray', rgb: [135, 107, 98] },
-    { type: 'terracotta', color: 'lime', rgb: [104, 118, 53] },
-    { type: 'terracotta', color: 'magenta', rgb: [150, 88, 109] },
-    { type: 'terracotta', color: 'orange', rgb: [162, 84, 38] },
-    { type: 'terracotta', color: 'pink', rgb: [162, 78, 79] },
-    { type: 'terracotta', color: 'purple', rgb: [118, 70, 86] },
-    { type: 'terracotta', color: 'red', rgb: [143, 61, 47] },
-    { type: 'terracotta', color: 'white', rgb: [210, 178, 161] },
-    { type: 'terracotta', color: 'yellow', rgb: [186, 133, 35] }
-];
+// Block colors from colors.txt
+const colorsTxt = `
+acacia_log.png: rgb(103, 97, 87) / #676157
+acacia_planks.png: rgb(168, 90, 50) / #a85a32
+amethyst_block.png: rgb(134, 98, 191) / #8662bf
+ancient_debris.png: rgb(96, 64, 56) / #604038
+andesite.png: rgb(136, 136, 137) / #888889
+bamboo_block.png: rgb(127, 144, 58) / #7f903a
+bamboo_planks.png: rgb(193, 173, 80) / #c1ad50
+birch_planks.png: rgb(192, 175, 121) / #c0af79
+black_concrete.png: rgb(8, 10, 15) / #080a0f
+black_terracotta.png: rgb(37, 23, 16) / #251710
+black_wool.png: rgb(21, 21, 26) / #15151a
+blackstone.png: rgb(42, 36, 41) / #2a2429
+blue_concrete.png: rgb(45, 47, 143) / #2d2f8f
+blue_ice.png: rgb(116, 168, 253) / #74a8fd
+blue_terracotta.png: rgb(74, 60, 91) / #4a3c5b
+blue_wool.png: rgb(53, 57, 157) / #35399d
+bone_block.png: rgb(229, 226, 208) / #e5e2d0
+brown_concrete.png: rgb(96, 60, 32) / #603c20
+brown_terracotta.png: rgb(77, 51, 36) / #4d3324
+brown_wool.png: rgb(114, 72, 41) / #724829
+calcite.png: rgb(223, 224, 221) / #dfe0dd
+cherry_log.png: rgb(55, 33, 44) / #37212c
+cherry_planks.png: rgb(227, 179, 173) / #e3b3ad
+clay.png: rgb(161, 166, 179) / #a1a6b3
+coal_block.png: rgb(16, 16, 16) / #101010
+cobbled_deepslate.png: rgb(77, 77, 81) / #4d4d51
+cobblestone.png: rgb(128, 127, 128) / #807f80
+copper_block.png: rgb(192, 108, 80) / #c06c50
+crimson_planks.png: rgb(101, 49, 71) / #653147
+cut_red_sandstone.png: rgb(189, 102, 32) / #bd6620
+cut_sandstone.png: rgb(218, 206, 160) / #dacea0
+cyan_concrete.png: rgb(21, 119, 136) / #157788
+cyan_terracotta.png: rgb(87, 91, 91) / #575b5b
+cyan_wool.png: rgb(21, 138, 145) / #158a91
+dark_oak_log.png: rgb(60, 47, 26) / #3c2f1a
+dark_oak_planks.png: rgb(67, 43, 20) / #432b14
+dark_prismarine.png: rgb(52, 92, 76) / #345c4c
+dead_brain_coral_block.png: rgb(124, 118, 114) / #7c7672
+dead_bubble_coral_block.png: rgb(132, 124, 119) / #847c77
+dead_fire_coral_block.png: rgb(132, 124, 120) / #847c78
+dead_horn_coral_block.png: rgb(134, 126, 122) / #867e7a
+dead_tube_coral_block.png: rgb(130, 123, 120) / #827b78
+deepslate.png: rgb(80, 80, 83) / #505053
+deepslate_bricks.png: rgb(71, 71, 71) / #474747
+deepslate_tiles.png: rgb(55, 55, 55) / #373737
+diamond_block.png: rgb(98, 237, 228) / #62ede4
+diorite.png: rgb(189, 188, 189) / #bdbcbd
+dirt.png: rgb(134, 96, 67) / #866043
+dripstone_block.png: rgb(134, 108, 93) / #866c5d
+emerald_block.png: rgb(42, 203, 88) / #2acb58
+end_stone.png: rgb(220, 223, 158) / #dcdf9e
+end_stone_bricks.png: rgb(218, 224, 162) / #dae0a2
+exposed_copper.png: rgb(161, 126, 104) / #a17e68
+gold_block.png: rgb(246, 208, 62) / #f6d03e
+granite.png: rgb(149, 103, 86) / #956756
+gray_concrete.png: rgb(55, 58, 62) / #373a3e
+gray_terracotta.png: rgb(58, 42, 36) / #3a2a24
+gray_wool.png: rgb(63, 68, 72) / #3f4448
+green_concrete.png: rgb(73, 91, 36) / #495b24
+green_terracotta.png: rgb(76, 83, 42) / #4c532a
+green_wool.png: rgb(85, 110, 28) / #556e1c
+honeycomb_block.png: rgb(229, 148, 30) / #e5941e
+iron_block.png: rgb(220, 220, 220) / #dcdcdc
+jungle_log.png: rgb(85, 68, 25) / #554419
+jungle_planks.png: rgb(160, 115, 81) / #a07351
+lapis_block.png: rgb(31, 67, 140) / #1f438c
+light_blue_concrete.png: rgb(36, 137, 199) / #2489c7
+light_blue_terracotta.png: rgb(113, 109, 138) / #716d8a
+light_blue_wool.png: rgb(58, 175, 217) / #3aafd9
+light_gray_concrete.png: rgb(125, 125, 115) / #7d7d73
+light_gray_terracotta.png: rgb(135, 107, 98) / #876b62
+light_gray_wool.png: rgb(142, 142, 135) / #8e8e87
+lime_concrete.png: rgb(94, 169, 25) / #5ea919
+lime_terracotta.png: rgb(104, 118, 53) / #687635
+lime_wool.png: rgb(112, 185, 26) / #70b91a
+magenta_concrete.png: rgb(169, 48, 159) / #a9309f
+magenta_terracotta.png: rgb(150, 88, 109) / #96586d
+magenta_wool.png: rgb(190, 69, 180) / #be45b4
+mangrove_log.png: rgb(84, 67, 41) / #544329
+mangrove_planks.png: rgb(118, 54, 49) / #763631
+moss_block.png: rgb(89, 110, 45) / #596e2d
+mud.png: rgb(60, 57, 61) / #3c393d
+mud_bricks.png: rgb(137, 104, 79) / #89684f
+nether_bricks.png: rgb(44, 22, 26) / #2c161a
+nether_wart_block.png: rgb(115, 3, 2) / #730302
+netherite_block.png: rgb(67, 61, 64) / #433d40
+netherrack.png: rgb(98, 38, 38) / #622626
+note_block.png: rgb(89, 59, 41) / #593b29
+oak_log.png: rgb(109, 85, 51) / #6d5533
+oak_planks.png: rgb(162, 131, 79) / #a2834f
+obsidian.png: rgb(15, 11, 25) / #0f0b19
+orange_concrete.png: rgb(224, 97, 1) / #e06101
+orange_terracotta.png: rgb(162, 84, 38) / #a25426
+orange_wool.png: rgb(241, 118, 20) / #f17614
+oxidized_copper.png: rgb(82, 163, 133) / #52a385
+packed_ice.png: rgb(142, 180, 250) / #8eb4fa
+packed_mud.png: rgb(142, 107, 80) / #8e6b50
+pink_concrete.png: rgb(214, 101, 143) / #d6658f
+pink_terracotta.png: rgb(162, 78, 79) / #a24e4f
+pink_wool.png: rgb(238, 141, 172) / #ee8dac
+polished_andesite.png: rgb(132, 135, 134) / #848786
+polished_blackstone.png: rgb(53, 49, 57) / #353139
+polished_deepslate.png: rgb(72, 73, 73) / #484949
+polished_diorite.png: rgb(193, 193, 195) / #c1c1c3
+polished_granite.png: rgb(154, 107, 89) / #9a6b59
+prismarine_bricks.png: rgb(99, 172, 158) / #63ac9e
+purple_concrete.png: rgb(100, 32, 156) / #64209c
+purple_terracotta.png: rgb(118, 70, 86) / #764656
+purple_wool.png: rgb(122, 42, 173) / #7a2aad
+purpur_block.png: rgb(170, 126, 170) / #aa7eaa
+quartz_bricks.png: rgb(235, 229, 222) / #ebe5de
+raw_gold_block.png: rgb(222, 169, 47) / #dea92f
+raw_iron_block.png: rgb(166, 136, 107) / #a6886b
+red_concrete.png: rgb(142, 33, 33) / #8e2121
+red_nether_bricks.png: rgb(70, 7, 9) / #460709
+red_terracotta.png: rgb(143, 61, 47) / #8f3d2f
+red_wool.png: rgb(161, 39, 35) / #a12723
+redstone_block.png: rgb(176, 25, 5) / #b01905
+shroomlight.png: rgb(241, 147, 71) / #f19347
+slime_block.png: rgb(112, 192, 92) / #70c05c
+smooth_basalt.png: rgb(73, 72, 78) / #49484e
+smooth_stone.png: rgb(159, 159, 159) / #9f9f9f
+soul_sand.png: rgb(81, 62, 51) / #513e33
+soul_soil.png: rgb(76, 58, 47) / #4c3a2f
+spruce_log.png: rgb(59, 38, 17) / #3b2611
+spruce_planks.png: rgb(115, 85, 49) / #735531
+stone.png: rgb(126, 126, 126) / #7e7e7e
+stone_bricks.png: rgb(122, 122, 122) / #7a7a7a
+stripped_acacia_log.png: rgb(175, 93, 60) / #af5d3c
+stripped_bamboo_block.png: rgb(193, 173, 80) / #c1ad50
+stripped_birch_log.png: rgb(197, 176, 118) / #c5b076
+stripped_cherry_log.png: rgb(215, 145, 149) / #d79195
+stripped_crimson_stem.png: rgb(137, 57, 90) / #89395a
+stripped_dark_oak_log.png: rgb(73, 57, 36) / #493924
+stripped_jungle_log.png: rgb(171, 133, 85) / #ab8555
+stripped_mangrove_log.png: rgb(120, 54, 48) / #783630
+stripped_oak_log.png: rgb(177, 144, 86) / #b19056
+stripped_spruce_log.png: rgb(116, 90, 52) / #745a34
+stripped_warped_stem.png: rgb(58, 151, 148) / #3a9794
+terracotta.png: rgb(152, 94, 68) / #985e44
+tuff.png: rgb(108, 109, 103) / #6c6d67
+warped_wart_block.png: rgb(23, 120, 121) / #177879
+weathered_copper.png: rgb(108, 153, 110) / #6c996e
+white_concrete.png: rgb(207, 213, 214) / #cfd5d6
+white_terracotta.png: rgb(210, 178, 161) / #d2b2a1
+white_wool.png: rgb(234, 236, 237) / #eaeced
+yellow_concrete.png: rgb(241, 175, 21) / #f1af15
+yellow_terracotta.png: rgb(186, 133, 35) / #ba8523
+yellow_wool.png: rgb(249, 198, 40) / #f9c628
+`.trim();
+
+// Parse colors.txt into blockColors array
+const blockColors = colorsTxt.split('\n').map(line => {
+    const [namePart, rgbPart] = line.split(': ');
+    const blockName = namePart.replace('.png', '');
+    const rgbMatch = rgbPart.match(/rgb\((\d+), (\d+), (\d+)\)/);
+    const rgb = [parseInt(rgbMatch[1]), parseInt(rgbMatch[2]), parseInt(rgbMatch[3])];
+    return { blockName, rgb };
+});
 
 let availableBlocks;
 
@@ -189,12 +296,11 @@ function getClosestBlockColor(r, g, b, a) {
     return closestBlock;
 }
 
-// Generate commands for a face
+// Update generateFaceCommands to use blockName
 function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageData, isAccessory = false) {
     const { type, skinMinX, skinMaxX, skinMinY, skinMaxY } = face;
     let fixedCoord, loop1, loop2, fixedValue;
 
-    // Determine offset for accessory layers
     let offset = { x: 0, y: 0, z: 0 };
     if (isAccessory) {
         switch (type) {
@@ -207,7 +313,6 @@ function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageDat
         }
     }
 
-    // Define looping and fixed coordinates based on face type
     if (type === 'front' || type === 'back') {
         fixedCoord = 'z';
         fixedValue = (type === 'front') ? minZ : maxZ;
@@ -230,17 +335,16 @@ function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageDat
     const loop2Min = loop2 === 'x' ? minX : minZ;
     const loop2Max = loop2 === 'x' ? maxX : maxZ;
 
-    // Get skin color for a block position
     function getSkinColor(loop2_val, loop1_val) {
         let skin_x, skin_y;
         if (loop2 === 'x') {
             skin_x = skinMinX + (loop2_val - minX);
-        } else { // loop2 === 'z'
+        } else {
             skin_x = skinMinX + (loop2_val - minZ);
         }
         if (loop1 === 'y') {
             skin_y = skinMinY + (maxY - loop1_val);
-        } else { // loop1 === 'z'
+        } else {
             skin_y = skinMinY + (loop1_val - minZ);
         }
         const index = (skin_y * 64 + skin_x) * 4;
@@ -255,11 +359,11 @@ function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageDat
     for (let l1 = loop1Min; l1 <= loop1Max; l1++) {
         let start_l2 = loop2Min;
         let currentBlock = getSkinColor(start_l2, l1);
-        if (isAccessory && currentBlock === null) continue; // Skip transparent rows in accessories
+        if (isAccessory && currentBlock === null) continue;
         for (let l2 = loop2Min + 1; l2 <= loop2Max + 1; l2++) {
             const nextBlock = l2 <= loop2Max ? getSkinColor(l2, l1) : null;
-            const isDifferent = nextBlock === null || currentBlock === null || 
-                               (nextBlock.type !== currentBlock.type || nextBlock.color !== currentBlock.color);
+            const isDifferent = nextBlock === null || currentBlock === null ||
+                               nextBlock.blockName !== currentBlock.blockName;
             if (l2 > loop2Max || isDifferent) {
                 if (currentBlock !== null) {
                     let x1, x2, y1, y2, z1, z2;
@@ -273,13 +377,13 @@ function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageDat
                         z2 = l2 - 1;
                         y1 = y2 = l1;
                         x1 = x2 = fixedValue + offset.x;
-                    } else { // fixedCoord === 'y'
+                    } else {
                         x1 = start_l2;
                         x2 = l2 - 1;
                         z1 = z2 = l1;
                         y1 = y2 = fixedValue + offset.y;
                     }
-                    commands.push(`fill ~${x1} ~${y1+3} ~${z1} ~${x2} ~${y2+3} ~${z2} minecraft:${currentBlock.color}_${currentBlock.type}`);
+                    commands.push(`fill ~${x1} ~${y1+3} ~${z1} ~${x2} ~${y2+3} ~${z2} minecraft:${currentBlock.blockName}`);
                 }
                 if (l2 <= loop2Max) {
                     start_l2 = l2;
@@ -291,7 +395,7 @@ function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageDat
     return commands;
 }
 
-// Process the skin and generate the command
+// Update processSkin to filter blocks based on dropdown
 function processSkin() {
     const fileInput = document.getElementById('skinUpload');
     const file = fileInput.files[0];
@@ -299,11 +403,24 @@ function processSkin() {
         alert('Please upload a skin file.');
         return;
     }
-    
+
     const blockOption = document.getElementById('blockOptions').value;
-    if (blockOption === 'wool') {
-        availableBlocks = blockColors.filter(block => block.type === 'wool');
-    } else {
+    if (blockOption === 'colorBlocks') {
+        const dyeColors = [
+            'white', 'orange', 'magenta', 'light_blue', 'yellow', 'lime', 'pink', 'gray',
+            'light_gray', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black'
+        ];
+        const colorableTypes = ['wool', 'concrete', 'terracotta'];
+        availableBlocks = blockColors.filter(block => {
+            const parts = block.blockName.split('_');
+            if (parts.length >= 2) {
+                const type = parts[parts.length - 1];
+                const color = parts.slice(0, -1).join('_'); // Handles multi-word colors like light_blue
+                return colorableTypes.includes(type) && dyeColors.includes(color);
+            }
+            return false;
+        });
+    } else { // allBlocks
         availableBlocks = blockColors;
     }
 
@@ -317,21 +434,15 @@ function processSkin() {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, 64, 64);
             const imageData = ctx.getImageData(0, 0, 64, 64).data;
-            
-            // Display a preview
+
             const previewDiv = document.getElementById('preview');
             previewDiv.innerHTML = '<h3>Skin Preview:</h3>';
             previewDiv.appendChild(img.cloneNode(true));
 
-            // Define the order of face processing as requested
             const faceTypes = ['bottom', 'top', 'left', 'right', 'back', 'front'];
-
-            // Generate commands for all faces in the specified order
             const commands = [];
             bodyParts.forEach(part => {
                 const { minX, maxX, minY, maxY, minZ, maxZ, faces, accessory } = part;
-                
-                // Process base faces in the specified order
                 faceTypes.forEach(type => {
                     const face = faces.find(f => f.type === type);
                     if (face) {
@@ -339,8 +450,6 @@ function processSkin() {
                         commands.push(...faceCommands);
                     }
                 });
-                
-                // Process accessory faces in the same order if available
                 if (accessory) {
                     faceTypes.forEach(type => {
                         const accessoryFace = accessory.find(f => f.type === type);
@@ -352,26 +461,17 @@ function processSkin() {
                 }
             });
 
-            // Command prefix and suffix (unchanged)
             const commandPrefix = `summon falling_block ~ ~2 ~ {Time:1b,BlockState:{Name:"minecraft:activator_rail"},Passengers:[{id:"minecraft:falling_block",Time:10b,BlockState:{Name:"minecraft:activator_rail"},Passengers:[{id:"minecraft:command_block_minecart",Command:"gamerule commandBlockOutput false"},{id:"minecraft:command_block_minecart",Command:"data merge block ~ ~-2 ~ {auto:0b}"},`;
-            
-            const commandSuffix = `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},` +
-                `{id:"minecraft:command_block_minecart",Command:"kill @e[type=command_block_minecart,distance=..1]"}` +
-                `]}]}`;
-            
-            // Calculate maximum length of command content
+            const commandSuffix = `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},{id:"minecraft:command_block_minecart",Command:"kill @e[type=command_block_minecart,distance=..1]"}]}]}`;
             const MAX_COMMAND_LENGTH = 32000;
             const PREFIX_LENGTH = commandPrefix.length;
             const SUFFIX_LENGTH = commandSuffix.length;
             const MAX_CONTENT_LENGTH = MAX_COMMAND_LENGTH - (PREFIX_LENGTH + SUFFIX_LENGTH);
-            
-            // Split commands into chunks
+
             const commandChunks = [];
             let currentChunk = "";
-            
             for (let i = 0; i < commands.length; i++) {
                 const commandStr = `{id:"minecraft:command_block_minecart",Command:"${commands[i]}"},`;
-                
                 if ((currentChunk.length + commandStr.length) > MAX_CONTENT_LENGTH && currentChunk.length > 0) {
                     commandChunks.push(currentChunk);
                     currentChunk = commandStr;
@@ -379,32 +479,25 @@ function processSkin() {
                     currentChunk += commandStr;
                 }
             }
-            
             if (currentChunk.length > 0) {
                 commandChunks.push(currentChunk);
             }
-            
-            // Create final command strings
+
             const finalCommands = [];
             for (let i = 0; i < commandChunks.length; i++) {
-                finalCommands.push(commandPrefix + commandChunks[i] + 
-                    `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},` +
-                    `{id:"minecraft:command_block_minecart",Command:"kill @e[type=command_block_minecart,distance=..1]"}` +
-                    `]}]}`);
+                finalCommands.push(commandPrefix + commandChunks[i] +
+                    `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},{id:"minecraft:command_block_minecart",Command:"kill @e[type=command_block_minecart,distance=..1]"}]}]}`);
             }
-            
-            // Update output
+
             const commandOutput = document.getElementById('commandOutput');
             const outputContainer = document.getElementById('output-container');
-            
             const existingInfo = document.querySelector('.split-info');
             if (existingInfo) existingInfo.remove();
-            
+
             if (finalCommands.length > 1) {
                 const splitInfo = document.createElement('div');
                 splitInfo.className = 'split-info';
                 splitInfo.innerHTML = `<p>The statue command has been split into ${finalCommands.length} parts due to length limits. Use each part in sequence.</p>`;
-                
                 const selector = document.createElement('select');
                 selector.id = 'commandSelector';
                 for (let i = 0; i < finalCommands.length; i++) {
@@ -413,12 +506,9 @@ function processSkin() {
                     option.textContent = `Command Part ${i + 1} of ${finalCommands.length}`;
                     selector.appendChild(option);
                 }
-                
                 selector.onchange = function() {
-                    const selectedIndex = this.value;
-                    commandOutput.value = finalCommands[selectedIndex];
+                    commandOutput.value = finalCommands[this.value];
                 };
-                
                 splitInfo.appendChild(selector);
                 outputContainer.insertBefore(splitInfo, commandOutput);
                 commandOutput.value = finalCommands[0];
@@ -430,7 +520,8 @@ function processSkin() {
     };
     reader.readAsDataURL(file);
 }
-// Copy command to clipboard
+
+// Keep the existing copyCommand function and event listener unchanged
 function copyCommand() {
     const commandOutput = document.getElementById('commandOutput');
     if (navigator.clipboard) {
@@ -455,5 +546,4 @@ function copyCommand() {
     }
 }
 
-// Add event listener to copy button
 document.getElementById('copyButton').addEventListener('click', copyCommand);
