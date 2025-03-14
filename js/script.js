@@ -306,42 +306,36 @@ function processSkin() {
             previewDiv.innerHTML = '<h3>Skin Preview:</h3>';
             previewDiv.appendChild(img.cloneNode(true));
 
-            // Generate commands for all faces
+            // Define the order of face processing as requested
+            const faceTypes = ['bottom', 'top', 'left', 'right', 'back', 'front'];
+
+            // Generate commands for all faces in the specified order
             const commands = [];
             bodyParts.forEach(part => {
                 const { minX, maxX, minY, maxY, minZ, maxZ, faces, accessory } = part;
                 
-                // Process non-front base faces first
-                faces.filter(face => face.type !== 'front').forEach(face => {
-                    const faceCommands = generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageData, false);
-                    commands.push(...faceCommands);
+                // Process base faces in the specified order
+                faceTypes.forEach(type => {
+                    const face = faces.find(f => f.type === type);
+                    if (face) {
+                        const faceCommands = generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageData, false);
+                        commands.push(...faceCommands);
+                    }
                 });
                 
-                // Then process the front base face
-                const frontFace = faces.find(face => face.type === 'front');
-                if (frontFace) {
-                    const frontCommands = generateFaceCommands(frontFace, minX, maxX, minY, maxY, minZ, maxZ, imageData, false);
-                    commands.push(...frontCommands);
-                }
-                
-                // Process accessory layers if available
+                // Process accessory faces in the same order if available
                 if (accessory) {
-                    // Process non-front accessory faces first
-                    accessory.filter(face => face.type !== 'front').forEach(face => {
-                        const accessoryCommands = generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageData, true);
-                        commands.push(...accessoryCommands);
+                    faceTypes.forEach(type => {
+                        const accessoryFace = accessory.find(f => f.type === type);
+                        if (accessoryFace) {
+                            const accessoryCommands = generateFaceCommands(accessoryFace, minX, maxX, minY, maxY, minZ, maxZ, imageData, true);
+                            commands.push(...accessoryCommands);
+                        }
                     });
-                    
-                    // Then process the front accessory face
-                    const frontAccessory = accessory.find(face => face.type === 'front');
-                    if (frontAccessory) {
-                        const frontAccessoryCommands = generateFaceCommands(frontAccessory, minX, maxX, minY, maxY, minZ, maxZ, imageData, true);
-                        commands.push(...frontAccessoryCommands);
-                    }
                 }
             });
 
-            // Command prefix and suffix
+            // Command prefix and suffix (unchanged)
             const commandPrefix = `summon falling_block ~ ~2 ~ {Time:1b,BlockState:{Name:"minecraft:activator_rail"},Passengers:[{id:"minecraft:falling_block",Time:10b,BlockState:{Name:"minecraft:activator_rail"},Passengers:[{id:"minecraft:command_block_minecart",Command:"gamerule commandBlockOutput false"},{id:"minecraft:command_block_minecart",Command:"data merge block ~ ~-2 ~ {auto:0b}"},`;
             
             const commandSuffix = `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},` +
@@ -419,7 +413,6 @@ function processSkin() {
     };
     reader.readAsDataURL(file);
 }
-
 // Copy command to clipboard
 function copyCommand() {
     const commandOutput = document.getElementById('commandOutput');
