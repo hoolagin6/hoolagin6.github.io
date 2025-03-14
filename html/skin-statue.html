@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft Statue Generator</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/skin-statue.css">
 </head>
 <body>
     <h1>Upload Your Minecraft Skin</h1>
@@ -14,8 +14,8 @@
         <input type="file" id="skinUpload" accept="image/png">
         <label for="blockOptions">Blocks to use:</label>
         <select id="blockOptions">
-            <option value="colorBlocks">Color Blocks</option>
             <option value="allBlocks">All Blocks</option>
+            <option value="colorBlocks">Color Blocks</option>
         </select>
         <button onclick="processSkin()">Generate Statue Command</button>
     </div>
@@ -29,6 +29,6 @@
         <textarea id="commandOutput" rows="10" cols="50" readonly></textarea>
     </div>
 
-    <script src="../js/script.js"></script>
+    <script src="../js/skin-statue.js"></script>
 </body>
 </html>

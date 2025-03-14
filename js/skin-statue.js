@@ -111,8 +111,6 @@ purple_terracotta.png: rgb(118, 70, 86) / #764656
 purple_wool.png: rgb(122, 42, 173) / #7a2aad
 purpur_block.png: rgb(170, 126, 170) / #aa7eaa
 quartz_bricks.png: rgb(235, 229, 222) / #ebe5de
-raw_gold_block.png: rgb(222, 169, 47) / #dea92f
-raw_iron_block.png: rgb(166, 136, 107) / #a6886b
 red_concrete.png: rgb(142, 33, 33) / #8e2121
 red_nether_bricks.png: rgb(70, 7, 9) / #460709
 red_terracotta.png: rgb(143, 61, 47) / #8f3d2f

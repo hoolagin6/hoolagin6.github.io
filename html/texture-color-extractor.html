@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texture Color Extractor</title>
+    <link rel="stylesheet" href="../css/texture-color-extractor.css">
+</head>
+<body>
+    <h1>Texture Color Extractor</h1>
+    <div class="container">
+        <div class="drop-zone" id="drop-zone">
+            <p>Drag and drop 16x16 textures here</p>
+            <p>(You can drag images directly from other websites)</p>
+        </div>
+        
+        <div class="preview-container" id="preview-container"></div>
+        
+        <div>
+            <label for="output">RGB Values:</label>
+            <textarea id="output" readonly placeholder="RGB values will appear here..."></textarea>
+        </div>
+        
+        <div class="actions">
+            <a href="https://mcasset.cloud/1.20.1/assets/minecraft/textures/block" target="_blank" class="btn-link btn-resource">Minecraft Textures</a>
+            <div class="right-actions">
+                <button id="copy-btn">Copy to Clipboard</button>
+                <button id="clear-btn">Clear All</button>
+            </div>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+
+    <script src="../js/texture-color-extractor.js"></script>
+</body>
+</html>
