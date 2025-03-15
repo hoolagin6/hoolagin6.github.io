@@ -395,6 +395,7 @@ function generateFaceCommands(face, minX, maxX, minY, maxY, minZ, maxZ, imageDat
 
 // Update processSkin to filter blocks based on dropdown
 function processSkin() {
+    // Get the uploaded skin file
     const fileInput = document.getElementById('skinUpload');
     const file = fileInput.files[0];
     if (!file) {
@@ -402,6 +403,7 @@ function processSkin() {
         return;
     }
 
+    // Set available blocks based on block option
     const blockOption = document.getElementById('blockOptions').value;
     if (blockOption === 'colorBlocks') {
         const dyeColors = [
@@ -413,15 +415,21 @@ function processSkin() {
             const parts = block.blockName.split('_');
             if (parts.length >= 2) {
                 const type = parts[parts.length - 1];
-                const color = parts.slice(0, -1).join('_'); // Handles multi-word colors like light_blue
+                const color = parts.slice(0, -1).join('_');
                 return colorableTypes.includes(type) && dyeColors.includes(color);
             }
             return false;
         });
-    } else { // allBlocks
+    } else {
         availableBlocks = blockColors;
     }
 
+    // Derive structure name from file name
+    const fileName = file.name;
+    let structureName = fileName.replace(/\.[^/.]+$/, "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+    if (!structureName) structureName = "statue";
+
+    // Read and process the skin image
     const reader = new FileReader();
     reader.onload = function(e) {
         const img = new Image();
@@ -433,10 +441,12 @@ function processSkin() {
             ctx.drawImage(img, 0, 0, 64, 64);
             const imageData = ctx.getImageData(0, 0, 64, 64).data;
 
+            // Display skin preview
             const previewDiv = document.getElementById('preview');
             previewDiv.innerHTML = '<h3>Skin Preview:</h3>';
             previewDiv.appendChild(img.cloneNode(true));
 
+            // Generate statue commands
             const faceTypes = ['bottom', 'top', 'left', 'right', 'back', 'front'];
             const commands = [];
             bodyParts.forEach(part => {
@@ -459,6 +469,7 @@ function processSkin() {
                 }
             });
 
+            // Split statue commands if necessary
             const commandPrefix = `summon falling_block ~ ~2 ~ {Time:1b,BlockState:{Name:"minecraft:activator_rail"},Passengers:[{id:"minecraft:falling_block",Time:10b,BlockState:{Name:"minecraft:activator_rail"},Passengers:[{id:"minecraft:command_block_minecart",Command:"gamerule commandBlockOutput false"},{id:"minecraft:command_block_minecart",Command:"data merge block ~ ~-2 ~ {auto:0b}"},`;
             const commandSuffix = `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},{id:"minecraft:command_block_minecart",Command:"kill @e[type=command_block_minecart,distance=..1]"}]}]}`;
             const MAX_COMMAND_LENGTH = 32000;
@@ -481,38 +492,60 @@ function processSkin() {
                 commandChunks.push(currentChunk);
             }
 
-            const finalCommands = [];
-            for (let i = 0; i < commandChunks.length; i++) {
-                finalCommands.push(commandPrefix + commandChunks[i] +
-                    `{id:"minecraft:command_block_minecart",Command:"setblock ~ ~1 ~ minecraft:command_block{auto:1b,Command:\\"fill ~ ~ ~ ~ ~-2 ~ minecraft:air\\"}"},{id:"minecraft:command_block_minecart",Command:"kill @e[type=command_block_minecart,distance=..1]"}]}]}`);
-            }
+            const finalCommands = commandChunks.map(chunk => commandPrefix + chunk + commandSuffix);
 
+            // Define structure block commands
+            const structureCommands = [
+                `/setblock ~9 ~3 ~-6 structure_block[mode=corner]{name:"${structureName}",rotation:"NONE",mirror:"NONE",mode:"CORNER"} replace`,
+                `/setblock ~-10 ~37 ~5 structure_block[mode=corner]{name:"${structureName}",rotation:"NONE",mirror:"NONE",mode:"CORNER"} replace`,
+                `/setblock ~ ~ ~-1 structure_block[mode=save]{name:"${structureName}",rotation:"NONE",mirror:"NONE",mode:"SAVE"} replace`
+            ];
+
+            // Combine all commands
+            const allCommands = [...finalCommands, ...structureCommands];
+            const statueCommandCount = finalCommands.length;
+
+            // Create labels for dropdown
+            const labels = [];
+            if (statueCommandCount > 1) {
+                for (let i = 1; i <= statueCommandCount; i++) {
+                    labels.push(`Statue Command Part ${i} of ${statueCommandCount}`);
+                }
+            } else {
+                labels.push("Statue Command");
+            }
+            labels.push(
+                "Structure Block bottom left corner",
+                "Structure Block top right corner",
+                "Structure Block console"
+            );
+
+            // Update the UI
             const commandOutput = document.getElementById('commandOutput');
             const outputContainer = document.getElementById('output-container');
             const existingInfo = document.querySelector('.split-info');
             if (existingInfo) existingInfo.remove();
 
-            if (finalCommands.length > 1) {
-                const splitInfo = document.createElement('div');
-                splitInfo.className = 'split-info';
-                splitInfo.innerHTML = `<p>The statue command has been split into ${finalCommands.length} parts due to length limits. Use each part in sequence.</p>`;
-                const selector = document.createElement('select');
-                selector.id = 'commandSelector';
-                for (let i = 0; i < finalCommands.length; i++) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = `Command Part ${i + 1} of ${finalCommands.length}`;
-                    selector.appendChild(option);
-                }
-                selector.onchange = function() {
-                    commandOutput.value = finalCommands[this.value];
-                };
-                splitInfo.appendChild(selector);
-                outputContainer.insertBefore(splitInfo, commandOutput);
-                commandOutput.value = finalCommands[0];
-            } else {
-                commandOutput.value = finalCommands[0];
+            const splitInfo = document.createElement('div');
+            splitInfo.className = 'split-info';
+            splitInfo.innerHTML = `<p>Select a command from the dropdown to view and copy it. Execute the statue commands first to build the statue, then the structure block commands to place the structure blocks. Finally, interact with the 'Structure Block console' to save the structure with the name "${structureName}".</p>`;
+
+            const commandSelector = document.createElement('select');
+            commandSelector.id = 'commandSelector';
+            for (let i = 0; i < allCommands.length; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = labels[i];
+                commandSelector.appendChild(option);
             }
+
+            commandSelector.onchange = function() {
+                commandOutput.value = allCommands[this.value];
+            };
+
+            splitInfo.appendChild(commandSelector);
+            outputContainer.insertBefore(splitInfo, commandOutput);
+            commandOutput.value = allCommands[0]; // Display the first command by default
         };
         img.src = e.target.result;
     };
