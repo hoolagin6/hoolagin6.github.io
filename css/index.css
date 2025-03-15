@@ -1,0 +1,117 @@
+body {
+    font-family: 'Minecraft', Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="8" height="8" x="0" y="0" fill="%23222"/><rect width="8" height="8" x="8" y="8" fill="%23222"/></svg>');
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    padding: 2rem 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-bottom: 4px solid #555;
+    margin-bottom: 3rem;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0;
+    text-shadow: 2px 2px 0 #000;
+    color: #7FCA5C;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+}
+
+.tool-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.tool-card {
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid #555;
+    border-radius: 4px;
+    padding: 1.5rem;
+    width: 320px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    border-color: #7FCA5C;
+}
+
+.tool-icon {
+    height: 160px;
+    background-color: rgba(255, 255, 255, 0.05);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #7FCA5C;
+    border: 1px solid #333;
+}
+
+.tool-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #7FCA5C;
+    font-weight: bold;
+}
+
+.tool-description {
+    color: #ccc;
+    line-height: 1.5;
+}
+
+footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 1rem;
+    border-top: 1px solid #333;
+    color: #777;
+}
+
+.btn {
+    background-color: #7FCA5C;
+    color: #111;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 1rem;
+    display: inline-block;
+    transition: background-color 0.2s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #8fda6c;
+}
+
+@media (max-width: 768px) {
+    .tool-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+}
