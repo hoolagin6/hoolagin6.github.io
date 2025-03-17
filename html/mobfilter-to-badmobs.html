@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobfilter to BadMobs Converter</title>
+    <!-- Load js-yaml library from CDN for YAML parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+</head>
+<body>
+    <h1>Upload Your Mobfilter YAML</h1>
+    <p>Select your mobfilter YAML file to convert it into a BadMobs TOML configuration.</p>
+    <input type="file" id="yamlFile" accept=".yaml,.yml">
+    <div id="output"></div>
+
+    <script>
+        // Add event listener to the file input to trigger conversion on file selection
+        document.getElementById('yamlFile').addEventListener('change', handleFileUpload);
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return; // Exit if no file is selected
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const yamlText = e.target.result;
+                try {
+                    // Parse the YAML content into a JavaScript object
+                    const parsedYaml = jsyaml.load(yamlText);
+                    const disallowedEntities = new Set();
+
+                    // Check if rules exist and are an array, then extract entity IDs from DISALLOW_SPAWN rules
+                    if (parsedYaml.rules && Array.isArray(parsedYaml.rules)) {
+                        parsedYaml.rules.forEach(rule => {
+                            if (rule.what === "DISALLOW_SPAWN" && rule.when && Array.isArray(rule.when.entityId)) {
+                                rule.when.entityId.forEach(id => disallowedEntities.add(id));
+                            }
+                        });
+                    }
+
+                    // Generate the BadMobs TOML configuration
+                    let toml = "[minecraft]\n"; // Top-level section as per BadMobs format
+                    disallowedEntities.forEach(entityId => {
+                        const entityName = entityId.split(':')[1]; // Extract entity name (e.g., "zombie" from "minecraft:zombie")
+                        toml += `\n[minecraft.${entityName}]\n`;
+                        toml += "allowNormalSpawning = false\n";
+                        toml += "allowSpawners = false\n";
+                        toml += "allowSpawnEggs = true\n";
+                        toml += "allowConversions = false\n";
+                    });
+
+                    // Create a downloadable TOML file
+                    const blob = new Blob([toml], { type: 'text/toml' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'badmobs.toml';
+                    a.textContent = 'Download BadMobs TOML';
+                    
+                    // Clear previous output and display the download link
+                    const outputDiv = document.getElementById('output');
+                    outputDiv.innerHTML = '';
+                    outputDiv.appendChild(a);
+                } catch (error) {
+                    // Display error message if YAML parsing fails
+                    document.getElementById('output').textContent = 'Error parsing YAML: ' + error.message;
+                }
+            };
+            reader.readAsText(file); // Read the uploaded file as text
+        }
+    </script>
+</body>
+</html>
