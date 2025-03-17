@@ -2,71 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobfilter to BadMobs Converter</title>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="../css/mobfilter-to-badmobs.css">
     <!-- Load js-yaml library from CDN for YAML parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 </head>
 <body>
-    <h1>Upload Your Mobfilter YAML</h1>
-    <p>Select your mobfilter YAML file to convert it into a BadMobs TOML configuration.</p>
-    <input type="file" id="yamlFile" accept=".yaml,.yml">
-    <div id="output"></div>
+    <div class="container">
+        <h1>Mobfilter to BadMobs Converter</h1>
+        
+        <div class="description">
+            <h3>Convert Fabric Mod Configs to Forge</h3>
+            <p>This tool helps Minecraft modders migrate from the Fabric mod ecosystem to Forge by converting <strong>Mobfilter</strong> YAML configurations to <strong>BadMobs</strong> TOML format.</p>
+            <p>The converter specifically focuses on mob spawn restrictions, creating a BadMobs configuration that disables normal spawning and mob spawners for any entity that was blocked in your original Mobfilter setup.</p>
+        </div>
+        
+        <div class="file-input-container">
+            <label for="yamlFile" class="file-input-label">Select Mobfilter YAML File</label>
+            <input type="file" id="yamlFile" accept=".yaml,.yml">
+            <small>Select your <code>mobfilter.yaml</code> configuration file</small>
+        </div>
+        
+        <div class="loading" id="loading">
+            Converting your configuration...
+        </div>
+        
+        <div id="output"></div>
+        
+        <div class="conversion-details" id="conversionDetails">
+            <h4>Conversion Summary</h4>
+            <p>Your BadMobs TOML file has been generated with the following settings for each disabled mob:</p>
+            <ul>
+                <li><strong>allowNormalSpawning = false</strong> - Prevents natural spawning in the world</li>
+                <li><strong>allowSpawners = false</strong> - Prevents spawning from mob spawner blocks</li>
+                <li><strong>allowSpawnEggs = true</strong> - Still allows using spawn eggs (for creative purposes)</li>
+                <li><strong>allowConversions = false</strong> - Prevents mob conversions (like villagers to zombie villagers)</li>
+            </ul>
+            <p>You may want to edit these settings manually if you need different behavior for specific mobs.</p>
+        </div>
+    </div>
+    
+    <footer>
+        hoolagin6's Tools &copy; 2025
+    </footer>
 
-    <script>
-        // Add event listener to the file input to trigger conversion on file selection
-        document.getElementById('yamlFile').addEventListener('change', handleFileUpload);
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return; // Exit if no file is selected
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const yamlText = e.target.result;
-                try {
-                    // Parse the YAML content into a JavaScript object
-                    const parsedYaml = jsyaml.load(yamlText);
-                    const disallowedEntities = new Set();
-
-                    // Check if rules exist and are an array, then extract entity IDs from DISALLOW_SPAWN rules
-                    if (parsedYaml.rules && Array.isArray(parsedYaml.rules)) {
-                        parsedYaml.rules.forEach(rule => {
-                            if (rule.what === "DISALLOW_SPAWN" && rule.when && Array.isArray(rule.when.entityId)) {
-                                rule.when.entityId.forEach(id => disallowedEntities.add(id));
-                            }
-                        });
-                    }
-
-                    // Generate the BadMobs TOML configuration
-                    let toml = "[minecraft]\n"; // Top-level section as per BadMobs format
-                    disallowedEntities.forEach(entityId => {
-                        const entityName = entityId.split(':')[1]; // Extract entity name (e.g., "zombie" from "minecraft:zombie")
-                        toml += `\n[minecraft.${entityName}]\n`;
-                        toml += "allowNormalSpawning = false\n";
-                        toml += "allowSpawners = false\n";
-                        toml += "allowSpawnEggs = true\n";
-                        toml += "allowConversions = false\n";
-                    });
-
-                    // Create a downloadable TOML file
-                    const blob = new Blob([toml], { type: 'text/toml' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'badmobs.toml';
-                    a.textContent = 'Download BadMobs TOML';
-                    
-                    // Clear previous output and display the download link
-                    const outputDiv = document.getElementById('output');
-                    outputDiv.innerHTML = '';
-                    outputDiv.appendChild(a);
-                } catch (error) {
-                    // Display error message if YAML parsing fails
-                    document.getElementById('output').textContent = 'Error parsing YAML: ' + error.message;
-                }
-            };
-            reader.readAsText(file); // Read the uploaded file as text
-        }
-    </script>
+    <!-- Link to external JavaScript -->
+    <script src="../js/mobfilter-to-badmobs.js"></script>
 </body>
 </html>
