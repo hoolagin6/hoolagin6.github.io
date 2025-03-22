@@ -108,9 +108,18 @@ input[type="file"] {
 }
 
 footer {
+    padding: 10px;
     text-align: center;
-    margin-top: 4rem;
-    padding: 1rem;
-    border-top: 1px solid #333;
-    color: #777;
+    border-top: 4px solid #555;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-height: 400px) {
+    footer p {
+        font-size: 12px;
+    }
 }
