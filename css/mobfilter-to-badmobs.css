@@ -1,33 +1,37 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    color: #333;
+    font-family: 'Minecraft', Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="8" height="8" x="0" y="0" fill="%23222"/><rect width="8" height="8" x="8" y="8" fill="%23222"/></svg>');
 }
 
 .container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid #555;
+    border-radius: 4px;
 }
 
 h1 {
-    color: #2c3e50;
+    color: #7FCA5C;
     margin-top: 0;
-    border-bottom: 2px solid #ecf0f1;
+    text-shadow: 2px 2px 0 #000;
     padding-bottom: 10px;
+    border-bottom: 2px solid #333;
 }
 
 .description {
-    background-color: #f8f9fa;
-    border-left: 4px solid #3498db;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-left: 4px solid #7FCA5C;
     padding: 15px;
     margin-bottom: 25px;
     border-radius: 0 4px 4px 0;
+    color: #ccc;
 }
 
 .file-input-container {
@@ -37,18 +41,19 @@ h1 {
 }
 
 .file-input-label {
-    background-color: #3498db;
-    color: white;
+    background-color: #7FCA5C;
+    color: #111;
     padding: 12px 20px;
     border-radius: 4px;
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .file-input-label:hover {
-    background-color: #2980b9;
+    background-color: #8fda6c;
 }
 
 input[type="file"] {
@@ -59,31 +64,34 @@ input[type="file"] {
     margin-top: 20px;
     padding: 15px;
     border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 #output a {
     display: inline-block;
-    background-color: #27ae60;
-    color: white;
+    background-color: #7FCA5C;
+    color: #111;
     padding: 12px 20px;
     text-decoration: none;
     border-radius: 4px;
     margin-top: 10px;
     transition: background-color 0.3s;
+    font-weight: bold;
 }
 
 #output a:hover {
-    background-color: #2ecc71;
+    background-color: #8fda6c;
 }
 
 .loading {
     display: none;
     text-align: center;
     margin: 20px 0;
+    color: #ccc;
 }
 
 .error {
-    background-color: #ffecec;
+    background-color: rgba(231, 76, 60, 0.2);
     color: #e74c3c;
     padding: 10px;
     border-radius: 4px;
@@ -92,15 +100,17 @@ input[type="file"] {
 
 .conversion-details {
     margin-top: 20px;
-    background-color: #eefaf7;
+    background-color: rgba(0, 0, 0, 0.5);
     padding: 15px;
     border-radius: 4px;
     display: none;
+    border: 1px solid #333;
 }
 
 footer {
-    margin-top: 30px;
     text-align: center;
-    font-size: 0.9em;
-    color: #7f8c8d;
+    margin-top: 4rem;
+    padding: 1rem;
+    border-top: 1px solid #333;
+    color: #777;
 }

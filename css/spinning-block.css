@@ -1,0 +1,215 @@
+body {
+    font-family: 'Minecraft', Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="8" height="8" x="0" y="0" fill="%23222"/><rect width="8" height="8" x="8" y="8" fill="%23222"/></svg>');
+    overflow: hidden;
+}
+
+#container {
+    display: flex;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#leftPanel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 2px solid #555;
+}
+
+#canvasContainer {
+    flex-grow: 1;
+    min-height: 200px;
+    position: relative;
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#textureControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-top: 4px solid #555;
+    height: auto;
+}
+
+.faceControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.faceControl {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+
+.dropZone {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-size: cover;
+    position: relative;
+    color: #7FCA5C;
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: border-color 0.2s;
+}
+
+.dropZone:hover {
+    border-color: #7FCA5C;
+}
+
+.globalDropZone {
+    width: 60px;
+    height: 60px;
+}
+
+.dropZoneText {
+    pointer-events: none;
+    font-size: 14px;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.rotationControl {
+    margin-top: 5px;
+    width: 100px;
+    background-color: #222;
+    color: #7FCA5C;
+    border: 1px solid #555;
+    padding: 5px;
+}
+
+.dials {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.dial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #7FCA5C;
+}
+
+.dial svg {
+    cursor: pointer;
+}
+
+#bottomControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border-top: 4px solid #555;
+}
+
+#bottomControls > * {
+    flex: 1 1 auto;
+    min-width: 100px;
+    padding: 8px;
+    background-color: #7FCA5C;
+    color: #111;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+}
+
+#bottomControls a {
+    text-decoration: none;
+    color: #111;
+}
+
+#bottomControls > *:hover {
+    background-color: #8fda6c;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .faceControls {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 800px) {
+    .dropZone {
+        width: 80px;
+        height: 80px;
+    }
+    .globalDropZone {
+        width: 50px;
+        height: 50px;
+    }
+    .rotationControl {
+        width: 80px;
+    }
+    .dial svg {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-height: 600px) {
+    .dropZone {
+        width: 70px;
+        height: 70px;
+    }
+    .globalDropZone {
+        width: 40px;
+        height: 40px;
+    }
+    .dial svg {
+        width: 40px;
+        height: 40px;
+    }
+    .rotationControl {
+        width: 70px;
+    }
+    #bottomControls {
+        padding: 5px;
+    }
+}
+
+@media (max-height: 400px) {
+    .dropZone {
+        width: 50px;
+        height: 50px;
+    }
+    .globalDropZone {
+        width: 30px;
+        height: 30px;
+    }
+    .dial svg {
+        width: 30px;
+        height: 30px;
+    }
+    .rotationControl {
+        width: 50px;
+    }
+}

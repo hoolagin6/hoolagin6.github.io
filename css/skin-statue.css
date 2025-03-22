@@ -1,27 +1,43 @@
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 40px;
-    background-color: #f5f5f5;
-    color: #333;
+    font-family: 'Minecraft', Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="8" height="8" x="0" y="0" fill="%23222"/><rect width="8" height="8" x="8" y="8" fill="%23222"/></svg>');
 }
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 h1 {
-    color: #2c3e50;
+    color: #7FCA5C;
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 20px;
+    text-shadow: 2px 2px 0 #000;
 }
+
 h2 {
-    color: #34495e;
+    color: #7FCA5C;
     font-size: 1.5em;
+    text-shadow: 1px 1px 0 #000;
 }
+
 .info {
-    background-color: #ecf0f1;
+    background-color: rgba(0, 0, 0, 0.7);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 4px;
     margin: 20px auto;
     max-width: 600px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border: 2px solid #555;
 }
+
 .input-group {
     display: flex;
     align-items: center;
@@ -29,78 +45,105 @@ h2 {
     gap: 15px;
     margin: 30px auto;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     max-width: 700px;
+    border: 2px solid #555;
 }
+
 input[type="file"] {
     padding: 5px;
+    color: #ccc;
 }
+
 select {
     padding: 8px 12px;
-    border: 1px solid #bdc3c7;
-    border-radius: 5px;
+    border: 1px solid #555;
+    border-radius: 4px;
     font-size: 1em;
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
     cursor: pointer;
 }
+
 button {
     padding: 10px 20px;
-    background-color: #27ae60;
-    color: white;
+    background-color: #7FCA5C;
+    color: #111;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s;
+    font-weight: bold;
 }
+
 button:hover {
-    background-color: #219653;
+    background-color: #8fda6c;
 }
+
 #preview {
     text-align: center;
     margin: 30px 0;
 }
+
 #preview img {
     width: 256px;
     image-rendering: pixelated;
-    border: 2px solid #bdc3c7;
-    border-radius: 5px;
+    border: 2px solid #555;
+    border-radius: 4px;
 }
+
 #output-container {
     max-width: 700px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    border: 2px solid #555;
 }
+
 .output-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
 }
+
 textarea {
     width: 100%;
     max-width: 660px;
     height: 300px;
     padding: 10px;
-    border: 1px solid #bdc3c7;
-    border-radius: 5px;
+    border: 1px solid #555;
+    border-radius: 4px;
     font-family: 'Courier New', monospace;
     font-size: 0.9em;
     resize: vertical;
-    background-color: #fdfdfd;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ccc;
 }
+
 .split-info {
-    background-color: #ffe3e3;
+    background-color: rgba(255, 227, 227, 0.1);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 4px;
     margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border: 1px solid #555;
+    border-left: 4px solid #7FCA5C;
 }
+
 .split-info select {
     margin-top: 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 1rem;
+    border-top: 1px solid #333;
+    color: #777;
 }
